@@ -66,6 +66,11 @@ export function addLocalPost(post) {
   saveLocalPosts(posts);
 }
 
+export function deleteLocalPost(id) {
+  const posts = getLocalPosts().filter(p => String(p.id) !== String(id));
+  saveLocalPosts(posts);
+}
+
 // Comments
 export function getLocalComments() {
   return JSON.parse(localStorage.getItem(COMMENTS_KEY) || '[]');
@@ -78,6 +83,16 @@ export function saveLocalComments(comments) {
 export function addLocalComment(comment) {
   const comments = getLocalComments();
   comments.push(comment);
+  saveLocalComments(comments);
+}
+
+export function deleteLocalComment(id) {
+  const comments = getLocalComments().filter(c => String(c.id) !== String(id));
+  saveLocalComments(comments);
+}
+
+export function deleteLocalCommentsByPostId(postId) {
+  const comments = getLocalComments().filter(c => String(c.postId) !== String(postId));
   saveLocalComments(comments);
 }
 

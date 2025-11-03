@@ -1,7 +1,7 @@
 import { createElement } from '../utils/dom.js';
 import { api } from '../services/api.js';
 import { getCurrentSearch } from '../components/SearchBar.js';
-import { addLocalComment, getLocalComments } from '../services/storage.js';
+import { addLocalComment, getLocalComments, deleteLocalComment } from '../services/storage.js';
 
 export function CommentsPage() {
   const root = createElement('div', { className: 'page comments' });
@@ -50,7 +50,18 @@ function renderComments(root, comments) {
         createElement('h4', {}, [c.name || 'Без названия']),
         createElement('span', { className: 'badge' }, [isLocal ? 'локально' : 'post#', c.postId])
       ]),
-      createElement('div', { className: 'muted' }, [c.body || '—'])
+      createElement('div', { className: 'muted' }, [c.body || '—']),
+      isLocal ? (() => {
+        const actions = createElement('div', { className: 'actions' });
+        const del = createElement('button', { className: 'btn danger' }, ['Удалить комментарий']);
+        del.addEventListener('click', () => {
+          deleteLocalComment(c.id);
+          const commentsRoot = document.querySelector('.page.comments');
+          if (commentsRoot) commentsRoot.dispatchEvent(new Event('reload'));
+        });
+        actions.append(del);
+        return actions;
+      })() : null
     ]));
   });
 }

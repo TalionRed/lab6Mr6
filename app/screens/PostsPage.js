@@ -1,7 +1,7 @@
 import { createElement } from '../utils/dom.js';
 import { api } from '../services/api.js';
 import { getCurrentSearch } from '../components/SearchBar.js';
-import { addLocalPost, getLocalPosts } from '../services/storage.js';
+import { addLocalPost, getLocalPosts, deleteLocalPost, deleteLocalCommentsByPostId } from '../services/storage.js';
 
 export function PostsPage() {
   const root = createElement('div', { className: 'page posts' });
@@ -50,7 +50,19 @@ function renderPosts(root, posts) {
         createElement('h4', {}, [p.title || 'Без названия']),
         isLocal ? createElement('span', { className: 'badge' }, ['локально']) : null
       ].filter(Boolean)),
-      createElement('div', { className: 'muted' }, [p.body || '—'])
+      createElement('div', { className: 'muted' }, [p.body || '—']),
+      isLocal ? (() => {
+        const actions = createElement('div', { className: 'actions' });
+        const del = createElement('button', { className: 'btn danger' }, ['Удалить пост']);
+        del.addEventListener('click', () => {
+          deleteLocalPost(p.id);
+          deleteLocalCommentsByPostId(p.id);
+          const postsRoot = document.querySelector('.page.posts');
+          if (postsRoot) postsRoot.dispatchEvent(new Event('reload'));
+        });
+        actions.append(del);
+        return actions;
+      })() : null
     ]));
   });
 }
