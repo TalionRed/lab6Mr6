@@ -39,4 +39,14 @@ export function deleteLocalTodosByUserId(userId) {
   saveLocalTodos(filtered);
 }
 
+export function updateLocalTodo(id, patch) {
+  const todos = getLocalTodos().map(t => {
+    if (String(t.id) === String(id)) {
+      return { ...t, ...patch };
+    }
+    return t;
+  });
+  saveLocalTodos(todos);
+}
+
 

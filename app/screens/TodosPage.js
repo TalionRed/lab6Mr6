@@ -1,7 +1,7 @@
 import { createElement } from '../utils/dom.js';
 import { api } from '../services/api.js';
 import { getCurrentSearch } from '../components/SearchBar.js';
-import { addLocalTodo, getLocalTodos } from '../services/storage.js';
+import { addLocalTodo, getLocalTodos, updateLocalTodo } from '../services/storage.js';
 
 export function TodosPage() {
   const root = createElement('div', { className: 'page todos' });
@@ -30,6 +30,9 @@ export function TodosPage() {
     renderTodos(listWrap, filtered, new Map(allUsers.map(u => [String(u.id), u])));
   }
 
+  // Перерисовка по кастомному событию
+  root.addEventListener('reload', () => { reload(); });
+
   reload();
   return root;
 }
@@ -43,12 +46,24 @@ function renderTodos(root, todos, userById) {
   todos.forEach(t => {
     const user = userById.get(String(t.userId));
     const done = !!t.completed;
+    const isLocal = String(t.id || '').startsWith('local-');
     const item = createElement('div', { className: 'list-item' }, [
       createElement('div', { className: 'row' }, [
         createElement('h4', {}, [t.title || 'Без названия']),
         createElement('span', { className: `badge ${done ? 'todo-done' : 'todo-open'}` }, [done ? 'выполнено' : 'открыто'])
       ]),
       user ? createElement('div', { className: 'muted' }, [user.name, ' · ', user.email]) : null,
+      isLocal ? (() => {
+        const actions = createElement('div', { className: 'actions' });
+        const toggle = createElement('button', { className: 'btn secondary' }, [done ? 'Снять выполнение' : 'Отметить выполнено']);
+        toggle.addEventListener('click', () => {
+          updateLocalTodo(t.id, { completed: !done });
+          const todosRoot = document.querySelector('.page.todos');
+          if (todosRoot) todosRoot.dispatchEvent(new Event('reload'));
+        });
+        actions.append(toggle);
+        return actions;
+      })() : null,
     ].filter(Boolean));
     root.append(item);
   });
