@@ -55,7 +55,7 @@ function renderTodos(root, todos, userById) {
 }
 
 function createAddTodoForm(onAdded) {
-  const userId = createElement('input', { placeholder: 'User ID (существующий или local-*)', required: true });
+  const userId = createElement('input', { placeholder: 'ID пользователя (существующий или local-*)', required: true });
   const title = createElement('input', { placeholder: 'Название задачи', required: true });
   const add = createElement('button', { className: 'btn' }, ['Добавить тудушку']);
 

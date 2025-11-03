@@ -33,6 +33,9 @@ export function UsersPage() {
     renderUsers(listWrap, filtered, locals.map(u => String(u.id)));
   }
 
+  // Перерисовка по кастомному событию
+  root.addEventListener('reload', () => { reload(); });
+
   reload();
   return root;
 }
@@ -48,7 +51,7 @@ function renderUsers(root, users, localIds) {
     const card = createElement('div', { className: 'list-item' }, [
       createElement('div', { className: 'row' }, [
         createElement('h4', {}, [u.name || 'Без имени']),
-        isLocal ? createElement('span', { className: 'badge' }, ['local']) : null
+        isLocal ? createElement('span', { className: 'badge' }, ['локально']) : null
       ]),
       createElement('div', { className: 'muted' }, [u.email || '—']),
       isLocal ? createElement('div', { className: 'row' }, [
@@ -57,8 +60,8 @@ function renderUsers(root, users, localIds) {
           btn.addEventListener('click', () => {
             deleteLocalUser(u.id);
             deleteLocalTodosByUserId(u.id);
-            // Trigger rerender via hashchange
-            location.hash = location.hash;
+            const usersRoot = document.querySelector('.page.users');
+            if (usersRoot) usersRoot.dispatchEvent(new Event('reload'));
           });
           return btn;
         })(),

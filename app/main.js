@@ -10,7 +10,7 @@ function mountShell() {
   appRoot.innerHTML = '';
 
   const header = createElement('div', { className: 'header' }, [
-    createElement('div', { className: 'logo', ariaLabel: 'Logo' }),
+    createElement('div', { className: 'logo', ariaLabel: 'Логотип' }),
     createElement('div', { className: 'title' }, [
       'магистр черкис и бобров'
     ])
