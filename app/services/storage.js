@@ -1,5 +1,7 @@
 const USERS_KEY = 'localUsers';
 const TODOS_KEY = 'localTodos';
+const POSTS_KEY = 'localPosts';
+const COMMENTS_KEY = 'localComments';
 
 export function getLocalUsers() {
   return JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
@@ -47,6 +49,36 @@ export function updateLocalTodo(id, patch) {
     return t;
   });
   saveLocalTodos(todos);
+}
+
+// Posts
+export function getLocalPosts() {
+  return JSON.parse(localStorage.getItem(POSTS_KEY) || '[]');
+}
+
+export function saveLocalPosts(posts) {
+  localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+}
+
+export function addLocalPost(post) {
+  const posts = getLocalPosts();
+  posts.push(post);
+  saveLocalPosts(posts);
+}
+
+// Comments
+export function getLocalComments() {
+  return JSON.parse(localStorage.getItem(COMMENTS_KEY) || '[]');
+}
+
+export function saveLocalComments(comments) {
+  localStorage.setItem(COMMENTS_KEY, JSON.stringify(comments));
+}
+
+export function addLocalComment(comment) {
+  const comments = getLocalComments();
+  comments.push(comment);
+  saveLocalComments(comments);
 }
 
 
